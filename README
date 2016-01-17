@@ -1,0 +1,5 @@
+Compile: make
+
+Usage: ./parser_test <filename>
+
+parser_test parses file, builds list of rules, parsed rules than clears list and memory.

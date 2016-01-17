@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" ?>
+
+<rule_list>
+	<contact name="LGE" date="2015-10-22"/>
+
+	<description>
+		<explanation str="Ruleset for Log Analyzer"/>
+	</description>
+
+	<history>
+		<log id="0" rule_code="0" date="2015-10-22" editor="LGE" action="Initial ruleset" description="d1"/>
+		<log id="1" rule_code="1" date="2015-11-15" editor="LGE" action="Add smurf rule" description="d2"/>
+	</history>
+
+	<!--
+		Synflood detected if
+		Within 2 seconds there are 3 attepts of connection
+		with TCP flag S0 and destination host as the host IP
+
+	-->
+
+	<rule code="0sasd" name="synflood" interval="2" count="3">
+		<indicators protocol="TCP" l3protonum="AF_INET" flag="SYN_SENT" dst_ip="111.111.111.111" src_port="8080" dst_port="65535"/>
+		<post_detection action="DROP" />
+	</rule>
+
+	<!--
+		Invalid rule example: protocol is missing
+	-->
+
+	<rule code="5" name="synflood5" interval="2" count="3">
+		<indicators l3protonum="AF_INET" flag="SYN_SENT" dst_ip="111.111.111.111" src_port="65535"/>
+		<post_detection action="DROP" />
+	</rule>
+	<!--
+		Smurf detected if
+		Within 2 seconds there are 5 attepts of connection
+		via ICMP protocol and destination host as the current host IP
+
+	-->
+
+	<rule code="1" name="smurf" interval="2" count="5">
+		<indicators protocol="ICMP" l3protonum="AF_INET" dst_ip="11.11.11.11"/>
+		<post_detection action="DROP" />
+	</rule>
+
+	<!--
+		AF_INET6 example
+	-->
+
+	<rule code="2" name="smurf2" interval="2" count="5">
+		<indicators protocol="ICMP" l3protonum="AF_INET6" dst_ip="11::ffff"/>
+		<post_detection action="DROP" />
+	</rule>
+
+
+	<!--
+		All attributes example
+	-->
+
+	<rule code="3" name="synflood_all" interval="2" count="3" block_period="10">
+		<indicators protocol="TCP" l3protonum="AF_INET" flag="SYN_SENT" src_ip="222.222.222.222" dst_ip="111.111.111.111" src_port="1234" dst_port="5678" track="BY_SRC"/>
+		<post_detection action="DROP" />
+	</rule>
+
+	<rule code="4" name="synflood_invalid" interval="2" count="3" block_period="10">
+
+		<indicators protocol="TCP" l3protonum="AF_INET" flag="SYN_SENT" src_ip="222.222.222.222" dst_ip="111.111.111.111" src_port="1234" dst_port="5678" track="BY_SRC" icmp_type="ECHO" icmp_code="4"/>
+
+		<post_detection action="DROP" />
+
+	</rule>
+	<rule code="6" name="synflood_port" interval="2" count="3" block_period="10">
+
+		<indicators protocol="TCP" l3protonum="AF_INET" flag="SYN_SENT" src_ip="222.222.222.222" dst_ip="111.111.111.111" src_port="1234" dst_port="5678" track="BY_SRC" />
+
+		<post_detection action="DROP" />
+
+	</rule>
+	<rule code="7" name="synflood_icmp" interval="2" count="3" block_period="10">
+
+		<indicators protocol="TCP" l3protonum="AF_INET" flag="SYN_SENT" src_ip="222.222.222.222" dst_ip="111.111.111.111"  track="BY_SRC" icmp_type="ECHO" icmp_code="123"/>
+
+		<post_detection action="DROP" />
+
+	</rule>
+</rule_list>
